@@ -36,13 +36,8 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    const bowerPath = this.destinationPath('bower.json');
-    const packagePath = this.destinationPath('package.json');
-
     // package.json
-    const pkg = this.fs.readJSON(packagePath, {});
-
-    _.merge(pkg, {
+    this._jsonReadMergeWrite(this.destinationPath('package.json'), {
       name: this.props.name,
       license: this.props.license,
       scripts: {
@@ -52,12 +47,8 @@ module.exports = class extends Generator {
       }
     });
 
-    this.fs.writeJSON(packagePath, pkg);
-
     // bower.json
-    const bower = this.fs.readJSON(bowerPath, {});
-
-    _.merge(bower, {
+    this._jsonReadMergeWrite(this.destinationPath('bower.json'), {
       name: this.props.name,
       ignore: [
         '**/.*',
@@ -65,9 +56,8 @@ module.exports = class extends Generator {
         'bower_components',
         'output'
       ]
-    });
+    }); 
 
-    this.fs.writeJSON(bowerPath, bower);
     // .vscode/settings.json
     this._jsonReadMergeWrite(this.destinationPath('.vscode/settings.json'), {
       'purescript.addNpmPath': true
