@@ -2,6 +2,12 @@ const Generator = require('yeoman-generator');
 const _ = require('lodash');
 
 module.exports = class extends Generator {
+  _jsonReadMergeWrite(path, mergeObj) {
+    const obj = this.fs.readJSON(path, {});
+    _.merge(obj, mergeObj);
+    this.fs.writeJSON(path, obj);
+  }
+
   initializing() {
     this.props = {};
 
@@ -62,6 +68,10 @@ module.exports = class extends Generator {
     });
 
     this.fs.writeJSON(bowerPath, bower);
+    // .vscode/settings.json
+    this._jsonReadMergeWrite(this.destinationPath('.vscode/settings.json'), {
+      'purescript.addNpmPath': true
+    });
 
     // other template files
     this.fs.copy(this.templatePath('**'), this.destinationPath())
